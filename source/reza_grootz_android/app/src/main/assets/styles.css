@@ -1,0 +1,38 @@
+:root {
+  color-scheme: dark;
+  --bg: #0a0f0d;
+  --fg: #c9f5dc;
+  --neon: #39ff88;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 0%, #16211c, var(--bg));
+  color: var(--fg);
+  font-family: system-ui, sans-serif;
+}
+
+.app {
+  text-align: center;
+  padding: 2rem;
+}
+
+h1 { color: var(--neon); }
+
+button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid var(--neon);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--neon);
+  font: inherit;
+  cursor: pointer;
+}
+
+button:active { transform: scale(0.97); }
