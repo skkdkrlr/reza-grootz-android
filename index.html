@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vortex · فیلترشکن پیشرفته</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0c14;
+      color: #e8edff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image: radial-gradient(circle at 20% 30%, #1a1e2e 0%, #0a0c14 90%);
+    }
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(18, 22, 36, 0.7);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 48px;
+      padding: 30px 35px 40px;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset;
+      position: relative;
+      overflow: hidden;
+    }
+    .app::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, rgba(123,97,255,0.03), rgba(180,122,255,0.01), rgba(123,97,255,0.03));
+      animation: rotate-bg 40s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes rotate-bg { 100% { transform: rotate(360deg); } }
+    .app > * { position: relative; z-index: 1; }
+
+    /* header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 28px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-icon {
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, #7b61ff, #b47aff);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 10px 40px rgba(123,97,255,0.35);
+    }
+    .logo h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #fff, #c8b8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .badge-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .badge {
+      padding: 6px 18px;
+      border-radius: 100px;
+      background: rgba(123,97,255,0.15);
+      border: 1px solid rgba(123,97,255,0.2);
+      font-size: 12px;
+      font-weight: 600;
+      color: #b8aaff;
+      backdrop-filter: blur(4px);
+    }
+    .badge i { margin-right: 6px; }
+
+    /* status row */
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      border-radius: 60px;
+      padding: 8px 20px 8px 28px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #6b7280;
+      transition: 0.3s;
+      box-shadow: 0 0 0 0 rgba(107,114,128,0.3);
+    }
+    .dot.connected { background: #34d399; box-shadow: 0 0 25px #34d39980; animation: pulse 2s infinite; }
+    .dot.connecting { background: #fbbf24; box-shadow: 0 0 25px #fbbf2480; animation: pulse 1s infinite; }
+    .dot.error { background: #f87171; box-shadow: 0 0 25px #f8717180; }
+    @keyframes pulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.25); } }
+    .status-text { font-weight: 600; font-size: 15px; }
+    .status-metrics {
+      display: flex;
+      gap: 25px;
+      font-size: 13px;
+      color: #9aa3c5;
+    }
+    .status-metrics span i { margin-right: 6px; color: #7b61ff; }
+
+    /* config */
+    .config-area {
+      background: rgba(255,255,255,0.02);
+      border-radius: 28px;
+      padding: 20px 24px 24px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .config-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8f97b8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .config-input-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .config-input-group input {
+      flex: 1;
+      min-width: 200px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 40px;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-family: 'Inter', monospace;
+      color: #f0f4ff;
+      outline: none;
+      transition: 0.3s;
+    }
+    .config-input-group input:focus {
+      border-color: #7b61ff;
+      box-shadow: 0 0 30px rgba(123,97,255,0.15);
+      background: rgba(0,0,0,0.6);
+    }
+    .config-input-group input::placeholder { color: #5b637f; }
+    .config-input-group button {
+      background: linear-gradient(135deg, #7b61ff, #a07eff);
+      border: none;
+      padding: 0 36px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 30px rgba(123,97,255,0.3);
+      white-space: nowrap;
+    }
+    .config-input-group button:hover { transform: scale(1.02); box-shadow: 0 12px 45px rgba(123,97,255,0.45); }
+    .config-input-group button:active { transform: scale(0.97); }
+
+    /* dashboard cards */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 20px 18px;
+      border: 1px solid rgba(255,255,255,0.03);
+      transition: 0.2s;
+    }
+    .card:hover { background: rgba(255,255,255,0.05); transform: translateY(-4px); }
+    .card .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #8f97b8;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .card .value {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #c8b8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card .sub {
+      font-size: 13px;
+      color: #8f97b8;
+      margin-top: 4px;
+    }
+    .card .icon-bg {
+      float: right;
+      font-size: 28px;
+      opacity: 0.12;
+      color: #b8aaff;
+    }
+
+    /* action + log */
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 24px;
+    }
+    .btn-connect {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 60px;
+      padding: 14px 44px;
+      font-weight: 700;
+      font-size: 17px;
+      color: #c8d0e8;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      backdrop-filter: blur(6px);
+    }
+    .btn-connect.active {
+      background: linear-gradient(135deg, #7b61ff, #a07eff);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 8px 40px rgba(123,97,255,0.35);
+    }
+    .btn-connect.active:hover { transform: scale(1.02); box-shadow: 0 12px 55px rgba(123,97,255,0.5); }
+    .btn-connect:not(.active):hover { background: rgba(255,255,255,0.08); }
+
+    .log-box {
+      background: rgba(0,0,0,0.25);
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-size: 13px;
+      color: #9aa3c5;
+      border: 1px solid rgba(255,255,255,0.03);
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .log-box i { color: #7b61ff; }
+
+    /* responsive */
+    @media (max-width: 820px) {
+      .dash-grid { grid-template-columns: repeat(2, 1fr); }
+      .app { padding: 24px 18px 30px; border-radius: 32px; }
+    }
+    @media (max-width: 500px) {
+      .dash-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .config-input-group button { padding: 0 20px; font-size: 13px; }
+      .btn-connect { padding: 12px 28px; font-size: 15px; }
+    }
+  </style>
+  <link rel="stylesheet" href="./styles.css" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="theme-color" content="#39FF88" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  </head>
+<body>
+<div class="app">
+  <!-- header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-bolt" style="color:#fff;"></i></div>
+      <h1>Vortex</h1>
+      <span class="badge"><i class="fas fa-shield-alt"></i> Secure</span>
+    </div>
+    <div class="badge-group">
+      <span class="badge"><i class="fas fa-code-branch"></i> v3.2</span>
+      <span class="badge"><i class="fas fa-globe-asia"></i> پروکسی</span>
+    </div>
+  </div>
+
+  <!-- status -->
+  <div class="status-row">
+    <div class="status-left">
+      <div class="dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">قطع</span>
+    </div>
+    <div class="status-metrics">
+      <span><i class="fas fa-signal"></i> <span id="pingDisplay">--</span> ms</span>
+      <span><i class="fas fa-exchange-alt"></i> <span id="trafficDisplay">۰</span> KB</span>
+      <span><i class="fas fa-clock"></i> <span id="uptimeDisplay">۰۰:۰۰</span></span>
+    </div>
+  </div>
+
+  <!-- config -->
+  <div class="config-area">
+    <div class="config-label"><i class="fas fa-key"></i> کانفیگ سرور (آدرس WebSocket یا JSON)</div>
+    <div class="config-input-group">
+      <input type="text" id="configInput" placeholder='مثلاً wss://example.com/proxy  یا  {"server":"wss://..."}' value='{"server":"wss://echo.websocket.org"}' />
+      <button id="applyBtn"><i class="fas fa-arrow-right"></i> اعمال</button>
+    </div>
+  </div>
+
+  <!-- dashboard -->
+  <div class="dash-grid">
+    <div class="card"><div class="icon-bg"><i class="fas fa-server"></i></div><div class="label">سرور</div><div class="value" id="serverDisplay">--</div><div class="sub">آدرس فعال</div></div>
+    <div class="card"><div class="icon-bg"><i class="fas fa-wave-square"></i></div><div class="label">پینگ</div><div class="value" id="pingValue">--</div><div class="sub">میانگین</div></div>
+    <div class="card"><div class="icon-bg"><i class="fas fa-arrow-up"></i></div><div class="label">آپلود</div><div class="value" id="uploadValue">۰</div><div class="sub">KB</div></div>
+    <div class="card"><div class="icon-bg"><i class="fas fa-arrow-down"></i></div><div class="label">دانلود</div><div class="value" id="downloadValue">۰</div><div class="sub">KB</div></div>
+  </div>
+
+  <!-- action -->
+  <div class="action-row">
+    <button class="btn-connect" id="connectBtn"><i class="fas fa-power-off"></i> اتصال</button>
+    <div class="log-box" id="logDisplay"><i class="fas fa-circle" style="font-size:8px; color:#6b7280;"></i> آماده</div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    // DOM
+    const configInput = document.getElementById('configInput');
+    const applyBtn = document.getElementById('applyBtn');
+    const connectBtn = document.getElementById('connectBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const pingDisplay = document.getElementById('pingDisplay');
+    const trafficDisplay = document.getElementById('trafficDisplay');
+    const uptimeDisplay = document.getElementById('uptimeDisplay');
+    const serverDisplay = document.getElementById('serverDisplay');
+    const pingValue = document.getElementById('pingValue');
+    const uploadValue = document.getElementById('uploadValue');
+    const downloadValue = document.getElementById('downloadValue');
+    const logDisplay = document.getElementById('logDisplay');
+
+    // state
+    let ws = null;
+    let isConnected = false;
+    let isConnecting = false;
+    let config = null;
+    let uploadBytes = 0, downloadBytes = 0;
+    let pingHistory = [];
+    let trafficInterval = null, pingInterval = null, uptimeInterval = null;
+    let startTime = null;
+
+    function setStatus(state, msg) {
+      statusDot.className = 'dot';
+      if (state === 'connected') { statusDot.classList.add('connected'); statusText.textContent = 'متصل'; }
+      else if (state === 'connecting') { statusDot.classList.add('connecting'); statusText.textContent = 'در حال اتصال...'; }
+      else if (state === 'error') { statusDot.classList.add('error'); statusText.textContent = 'خطا'; }
+      else { statusText.textContent = 'قطع'; }
+      if (msg) logDisplay.innerHTML = `<i class="fas fa-circle" style="color:#7b61ff; font-size:8px;"></i> ${msg}`;
+    }
+
+    function updateDashboard(server = '--') {
+      serverDisplay.textContent = server;
+      pingValue.textContent = pingHistory.length ? Math.round(pingHistory.reduce((a,b)=>a+b,0)/pingHistory.length) : '--';
+      uploadValue.textContent = (uploadBytes/1024).toFixed(1);
+      downloadValue.textContent = (downloadBytes/1024).toFixed(1);
+      pingDisplay.textContent = pingHistory.length ? Math.round(pingHistory[pingHistory.length-1]) : '--';
+      trafficDisplay.textContent = ((uploadBytes+downloadBytes)/1024).toFixed(0);
+    }
+
+    function resetStats() {
+      uploadBytes = 0; downloadBytes = 0; pingHistory = [];
+      updateDashboard();
+    }
+
+    function disconnectWs() {
+      if (ws) { ws.close(); ws = null; }
+      isConnected = false; isConnecting = false;
+      connectBtn.classList.remove('active');
+      connectBtn.innerHTML = '<i class="fas fa-power-off"></i> اتصال';
+      setStatus('', 'قطع شد');
+      if (pingInterval) clearInterval(pingInterval);
+      if (trafficInterval) clearInterval(trafficInterval);
+      if (uptimeInterval) clearInterval(uptimeInterval);
+      resetStats();
+      startTime = null;
+      uptimeDisplay.textContent = '۰۰:۰۰';
+      logDisplay.innerHTML = '<i class="fas fa-circle" style="color:#6b7280; font-size:8px;"></i> قطع شد';
+    }
+
+    function connectToServer(cfg) {
+      if (isConnected || isConnecting) { disconnectWs(); return; }
+      if (!cfg || !cfg.server) {
+        setStatus('error', 'کانفیگ نامعتبر');
+        return;
+      }
+      let url = cfg.server;
+      if (!url.startsWith('ws://') && !url.startsWith('wss://')) url = 'wss://' + url;
+
+      isConnecting = true;
+      setStatus('connecting', `اتصال به ${url} ...`);
+      connectBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> در حال اتصال';
+
+      try {
+        ws = new WebSocket(url);
+      } catch(e) {
+        setStatus('error', 'آدرس نامعتبر');
+        isConnecting = false;
+        connectBtn.innerHTML = '<i class="fas fa-power-off"></i> اتصال';
+        return;
+      }
+
+      ws.onopen = () => {
+        isConnected = true; isConnecting = false;
+        setStatus('connected', 'اتصال برقرار ✓');
+        connectBtn.classList.add('active');
+        connectBtn.innerHTML = '<i class="fas fa-power-off"></i> قطع';
+        resetStats();
+        updateDashboard(cfg.server);
+        startTime = Date.now();
+        if (uptimeInterval) clearInterval(uptimeInterval);
+        uptimeInterval = setInterval(() => {
+          if (startTime) {
+            const diff = Math.floor((Date.now() - startTime) / 1000);
+            const m = String(Math.floor(diff/60)).padStart(2,'0');
+            const s = String(diff%60).padStart(2,'0');
+            uptimeDisplay.textContent = `${m}:${s}`;
+          }
+        }, 1000);
+
+        if (pingInterval) clearInterval(pingInterval);
+        pingInterval = setInterval(() => {
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            const start = performance.now();
+            ws.send('ping');
+            ws._pingStart = start;
+          }
+        }, 3000);
+
+        if (trafficInterval) clearInterval(trafficInterval);
+        trafficInterval = setInterval(() => {
+          if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
+            // شبیه‌سازی ترافیک (در صورت عدم دریافت داده واقعی)
+            const up = Math.random() * 3 + 0.5;
+            const down = Math.random() * 6 + 1.5;
+            uploadBytes += up;
+            downloadBytes += down;
+            updateDashboard(cfg.server);
+          }
+        }, 1500);
+      };
+
+      ws.onmessage = (e) => {
+        if (e.data === 'pong' && ws._pingStart) {
+          const latency = performance.now() - ws._pingStart;
+          pingHistory.push(latency);
+          if (pingHistory.length > 20) pingHistory.shift();
+          updateDashboard(config ? config.server : '--');
+        }
+        // هر داده دیگر به عنوان دانلود محاسبه شود
+        if (typeof e.data === 'string' && e.data !== 'pong') {
+          downloadBytes += new Blob([e.data]).size;
+          updateDashboard(config ? config.server : '--');
+        } else if (e.data instanceof ArrayBuffer || e.data instanceof Blob) {
+          downloadBytes += e.data.size || e.data.byteLength || 0;
+          updateDashboard(config ? config.server : '--');
+        }
+      };
+
+      ws.onerror = () => {
+        setStatus('error', 'خطا در ارتباط');
+        isConnecting = false;
+        connectBtn.innerHTML = '<i class="fas fa-power-off"></i> اتصال';
+        if (ws) ws.close();
+        isConnected = false;
+        connectBtn.classList.remove('active');
+        if (pingInterval) clearInterval(pingInterval);
+        if (trafficInterval) clearInterval(trafficInterval);
+        if (uptimeInterval) clearInterval(uptimeInterval);
+      };
+
+      ws.onclose = () => {
+        if (isConnected) setStatus('error', 'اتصال قطع شد');
+        else if (!isConnecting) setStatus('', 'قطع');
+        isConnected = false; isConnecting = false;
+        connectBtn.classList.remove('active');
+        connectBtn.innerHTML = '<i class="fas fa-power-off"></i> اتصال';
+        if (pingInterval) clearInterval(pingInterval);
+        if (trafficInterval) clearInterval(trafficInterval);
+        if (uptimeInterval) clearInterval(uptimeInterval);
+        resetStats();
+        startTime = null;
+        uptimeDisplay.textContent = '۰۰:۰۰';
+      };
+    }
+
+    function parseConfig(input) {
+      try {
+        if (input.trim().startsWith('{')) {
+          const obj = JSON.parse(input);
+          if (obj.server) return obj;
+          throw new Error('فیلد server وجود ندارد');
+        }
+        return { server: input.trim() };
+      } catch(e) {
+        if (input.includes('.') || input.includes(':')) return { server: input.trim() };
+        throw new Error('فرمت کانفیگ نامعتبر');
+      }
+    }
+
+    function applyConfig() {
+      const raw = configInput.value.trim();
+      if (!raw) { setStatus('error', 'لطفاً کانفیگ را وارد کنید'); return; }
+      try {
+        const parsed = parseConfig(raw);
+        config = parsed;
+        if (isConnected || isConnecting) disconnectWs();
+        setStatus('', 'کانفیگ ذخیره شد');
+        logDisplay.innerHTML = `<i class="fas fa-check-circle" style="color:#34d399;"></i> کانفیگ اعمال شد`;
+        updateDashboard(config.server || '--');
+      } catch(e) {
+        setStatus('error', e.message);
+      }
+    }
+
+    // event listeners
+    applyBtn.addEventListener('click', applyConfig);
+    configInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') applyConfig(); });
+
+    connectBtn.addEventListener('click', () => {
+      if (isConnected || isConnecting) { disconnectWs(); return; }
+      if (!config) {
+        try {
+          const parsed = parseConfig(configInput.value.trim());
+          config = parsed;
+          updateDashboard(config.server || '--');
+          logDisplay.innerHTML = `<i class="fas fa-check-circle" style="color:#34d399;"></i> کانفیگ خودکار اعمال شد`;
+        } catc
+<script src="./app.js"></script>
+    <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});}</script>
